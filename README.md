@@ -1,105 +1,107 @@
-# LeeSpec — Specification-Driven Development for Claude Code
+# LeeSpec — 規格驅動開發，為 Claude Code 打造
 
-LeeSpec is a set of [Claude Code](https://claude.ai/code) custom skills that implement a structured, specification-driven development workflow. It guides you from initial idea through design, formal proposal, implementation, and archival — ensuring every change is well-specified, reviewed, and traceable.
+> [English](README.en.md)
 
-## The Pipeline
+LeeSpec 是一組 [Claude Code](https://claude.ai/code) 自訂技能（slash commands），實現結構化的**規格驅動開發流程**。從最初的想法到設計、正式提案、實作、歸檔，確保每個變更都有完整的規格、審查和追溯紀錄。
+
+## 流程總覽
 
 ```
-  Design  →  Propose  →  Implement  →  Archive
-    💡          📋           🔨           📦
+  設計  →  提案  →  實作  →  歸檔
+   💡       📋       🔨       📦
 ```
 
-| Stage | Slash Command | What It Does |
-|-------|--------------|--------------|
-| **Design** | `/leespec-design` | Collaborative brainstorming with Quick (lightweight) and Full (section-by-section) modes |
-| **Propose** | `/leespec-propose` | Formalize design into a structured spec proposal with EARS-format requirements |
-| **Implement** | `/leespec-implement` | Execute tasks sequentially with test-after-each validation |
-| **Archive** | `/leespec-archive` | Merge spec deltas into living specs and archive the completed change |
-| **Context** | `/leespec-context` | Explore existing specs, active changes, and archived history |
+| 階段 | 指令 | 說明 |
+|------|------|------|
+| **設計** | `/leespec-design` | 協作式腦力激盪，支援 Quick（精簡）和 Full（完整逐段）模式 |
+| **提案** | `/leespec-propose` | 將設計正式化為結構化 spec proposal，含 EARS 格式需求 |
+| **實作** | `/leespec-implement` | 依序執行任務，每個任務完成後立即測試驗證 |
+| **歸檔** | `/leespec-archive` | 將 spec delta 合併至 living specs，歸檔已完成的變更 |
+| **查詢** | `/leespec-context` | 探索現有 specs、進行中的 changes 和歸檔歷史 |
 
-## How It Works
+## 運作方式
 
-### 1. Design (`/leespec-design`)
+### 1. 設計 (`/leespec-design`)
 
-Start with an idea. Choose **Quick mode** for small changes or **Full mode** for complex features. The design phase walks you through discovery, approach selection, section-by-section drafting, and quality review — all before any code is written.
+從一個想法開始。選擇 **Quick mode** 處理小改動，或 **Full mode** 處理複雜功能。設計階段會引導你完成探索、方案選擇、逐段撰寫和品質審查 — 全部在寫任何程式碼之前。
 
-### 2. Propose (`/leespec-propose`)
+### 2. 提案 (`/leespec-propose`)
 
-Turn your approved design into a formal spec proposal with three artifacts:
-- **`proposal.md`** — Why this change matters, what changes, and impact assessment
-- **`tasks.md`** — Ordered, testable implementation tasks (5–15 typical)
-- **`spec-delta.md`** — EARS-format requirements (ADDED / MODIFIED / REMOVED) with scenarios
+將通過審查的設計轉化為正式 spec proposal，產出三份文件：
+- **`proposal.md`** — 為何需要此變更、變更內容、影響評估
+- **`tasks.md`** — 按順序排列的可測試實作任務（通常 5–15 個）
+- **`spec-delta.md`** — EARS 格式的需求變更（ADDED / MODIFIED / REMOVED）附帶 scenario
 
-### 3. Implement (`/leespec-implement`)
+### 3. 實作 (`/leespec-implement`)
 
-Execute tasks one by one following a strict **read → execute → test → validate** loop. No task is marked complete until its tests pass.
+嚴格遵循 **讀取 → 執行 → 測試 → 驗證** 循環，逐一執行任務。測試未通過前，任務不會標記為完成。
 
-### 4. Archive (`/leespec-archive`)
+### 4. 歸檔 (`/leespec-archive`)
 
-After implementation and deployment, merge spec deltas into living spec files and move the change folder to the archive. Archives are immutable history.
+實作和部署完成後，將 spec delta 合併至 living spec 檔案，並將 change 資料夾移至 archive。Archive 是不可變的歷史紀錄。
 
-### 5. Context (`/leespec-context`)
+### 5. 脈絡查詢 (`/leespec-context`)
 
-Query the current state of your specifications at any time — list capabilities, search requirements, view active changes, or get a dashboard overview.
+隨時查詢規格的現狀 — 列出 capabilities、搜尋需求、檢視進行中的 changes，或取得總覽儀表板。
 
-## Project Structure (in your target project)
+## 專案目錄結構（在你的目標專案中）
 
-LeeSpec expects and manages this directory layout:
+LeeSpec 預期並管理以下目錄佈局：
 
 ```
 spec/
-├── specs/              # Living specifications (source of truth)
+├── specs/              # Living specifications（真實來源）
 │   └── {capability}/
 │       └── spec.md
-├── changes/            # Active change proposals
+├── changes/            # 進行中的 change proposals
 │   └── {change-id}/
 │       ├── proposal.md
 │       ├── tasks.md
-│       ├── IMPLEMENTED     # Marker file
+│       ├── IMPLEMENTED     # 完成標記檔
 │       └── specs/
 │           └── {capability}/
 │               └── spec-delta.md
-├── archive/            # Completed changes (immutable)
+├── archive/            # 已完成的 changes（不可變）
 │   └── {date}-{change-id}/
-└── designs/            # Design documents
+└── designs/            # 設計文件
     └── YYYY-MM-DD-{topic}-design.md
 ```
 
-## EARS Requirement Format
+## EARS 需求格式
 
-LeeSpec uses the [EARS (Easy Approach to Requirements Syntax)](https://alistairmavin.com/ears/) pattern:
+LeeSpec 使用 [EARS (Easy Approach to Requirements Syntax)](https://alistairmavin.com/ears/) 模式撰寫需求：
 
 ```markdown
-### Requirement: Descriptive Name
-WHEN trigger condition,
-the system SHALL expected behavior.
+### Requirement: 需求名稱
+WHEN 觸發條件，
+the system SHALL 預期行為。
 
-#### Scenario: Happy Path
-GIVEN precondition
-WHEN action
-THEN expected result
+#### Scenario: 正常路徑
+GIVEN 前置條件
+WHEN 動作
+THEN 預期結果
 ```
 
-Trigger keywords: **WHEN** (event), **IF** (state), **WHERE** (feature-specific), **WHILE** (ongoing)
+觸發關鍵字：**WHEN**（事件驅動）、**IF**（狀態驅動）、**WHERE**（功能特定）、**WHILE**（持續性）
 
-## Installation
+## 安裝
 
-Copy the skill files into your Claude Code skills directory:
+將 skill 檔案複製到 Claude Code 的 skills 目錄：
 
 ```bash
-# Copy all skill files
+# 複製所有 skill 檔案
 cp leespec-*.md ~/.claude/skills/
 
-# Or symlink for easier updates
+# 或使用 symlink 方便更新
 ln -s $(pwd)/leespec-*.md ~/.claude/skills/
 ```
 
-Then use any `/leespec-*` command in Claude Code to get started.
+然後在 Claude Code 中使用任何 `/leespec-*` 指令即可開始。
 
-## Language
+## 語言
 
-Skill prompts are written in **Traditional Chinese (繁體中文)** with English technical terms. Claude Code will interact with you in your preferred language regardless.
+Skill prompts 以**繁體中文**撰寫，技術術語保留英文。Claude Code 會依據你的偏好語言與你互動。
 
-## License
+## 授權
 
 MIT
