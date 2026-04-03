@@ -4,6 +4,15 @@
 
 LeeSpec 是一組 [Claude Code](https://claude.ai/code) 自訂技能（slash commands），實現結構化的**規格驅動開發流程**。從最初的想法到設計、正式提案、實作、歸檔，確保每個變更都有完整的規格、審查和追溯紀錄。
 
+## 致謝
+
+LeeSpec 站在巨人的肩膀上，結合了以下兩個優秀的開源 Claude Code skills：
+
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** — Spec-driven development（規格驅動開發）框架，提供了 living specs、spec delta、EARS 格式需求等核心概念
+- **[Superpowers](https://github.com/obra/superpowers)** — Agentic skills 框架與軟體開發方法論，提供了腦力激盪、逐段協作、品質把關等設計流程的靈感
+
+感謝這兩個專案的作者與社群，讓我們能在此基礎上打造 LeeSpec。
+
 ## 流程總覽
 
 ```

@@ -4,6 +4,15 @@
 
 LeeSpec is a set of [Claude Code](https://claude.ai/code) custom skills that implement a structured, specification-driven development workflow. It guides you from initial idea through design, formal proposal, implementation, and archival — ensuring every change is well-specified, reviewed, and traceable.
 
+## Acknowledgments
+
+LeeSpec is built upon the ideas and patterns from two excellent open-source Claude Code skills:
+
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** — Spec-driven development framework that introduced core concepts like living specs, spec deltas, and EARS-format requirements
+- **[Superpowers](https://github.com/obra/superpowers)** — Agentic skills framework and software development methodology that inspired the brainstorming, section-by-section collaboration, and quality gate workflows
+
+Thanks to the authors and communities of both projects for making LeeSpec possible.
+
 ## The Pipeline
 
 ```
