@@ -1,6 +1,6 @@
 ---
 name: leespec-archive
-description: "LeeSpec 歸檔 — 歸檔已完成的變更，將 spec delta 合併至 living spec 文件。歸檔代表實作和部署已完成。觸發詞：leespec archive、歸檔、archive change、merge specs、finalize spec。"
+description: "LeeSpec 歸檔（OpenSpec 對齊）— 歸檔已完成的變更，將 spec delta 合併至 living spec 文件。歸檔代表實作和部署已完成。觸發詞：leespec archive、歸檔、archive change、merge specs、finalize spec。"
 ---
 
 # LeeSpec Archive — 歸檔完成的變更
@@ -27,10 +27,10 @@ Archive Progress:
 
 ```bash
 # 檢查 IMPLEMENTED 標記
-test -f spec/changes/{change-id}/IMPLEMENTED && echo "✓ Implemented" || echo "✗ Not implemented"
+test -f openspec/changes/{change-id}/IMPLEMENTED && echo "✓ Implemented" || echo "✗ Not implemented"
 
 # 審閱任務
-cat spec/changes/{change-id}/tasks.md
+cat openspec/changes/{change-id}/tasks.md
 
 # 檢查 git 狀態
 git status
@@ -42,10 +42,10 @@ git status
 
 ```bash
 # 列出所有 delta 檔案
-find spec/changes/{change-id}/specs -name "*.md" -type f
+find openspec/changes/{change-id}/specs -name "*.md" -type f
 
 # 讀取每個 delta
-for file in spec/changes/{change-id}/specs/**/*.md; do
+for file in openspec/changes/{change-id}/specs/**/*.md; do
     echo "=== $file ==="
     cat "$file"
 done
@@ -60,7 +60,7 @@ done
 
 ```bash
 TIMESTAMP=$(date +%Y-%m-%d)
-mkdir -p spec/archive/${TIMESTAMP}-{change-id}
+mkdir -p openspec/changes/archive/${TIMESTAMP}-{change-id}
 ```
 
 ### Step 4: Merge ADDED requirements
@@ -94,14 +94,14 @@ mkdir -p spec/archive/${TIMESTAMP}-{change-id}
 
 ```bash
 # 先 commit 合併的 specs
-git add spec/specs/
+git add openspec/specs/
 git commit -m "Merge spec deltas from {change-id}"
 
-# 再搬移到 archive
-mv spec/changes/{change-id} spec/archive/${TIMESTAMP}-{change-id}
+# 再搬移到 archive（在 changes/ 底下）
+mv openspec/changes/{change-id} openspec/changes/archive/${TIMESTAMP}-{change-id}
 
 # 驗證搬移成功
-ls -la spec/archive/${TIMESTAMP}-{change-id}
+ls -la openspec/changes/archive/${TIMESTAMP}-{change-id}
 ```
 
 **整個資料夾一次搬移，不要挑選個別檔案。**
@@ -110,13 +110,13 @@ ls -la spec/archive/${TIMESTAMP}-{change-id}
 
 ```bash
 # 檢查需求格式
-grep -n "### Requirement:" spec/specs/**/*.md
+grep -n "### Requirement:" openspec/specs/**/*.md
 
 # 檢查 scenario 格式
-grep -n "#### Scenario:" spec/specs/**/*.md
+grep -n "#### Scenario:" openspec/specs/**/*.md
 
 # 計算每個 spec 的需求數
-for spec in spec/specs/**/spec.md; do
+for spec in openspec/specs/**/spec.md; do
     count=$(grep -c "### Requirement:" "$spec")
     echo "$spec: $count requirements"
 done
@@ -141,7 +141,7 @@ done
 建議分兩個 commit：
 ```bash
 # Commit 1: 合併 delta
-git add spec/specs/
+git add openspec/specs/
 git commit -m "Merge spec deltas from {change-id}
 
 - Added: {列出新增的需求}
@@ -149,7 +149,7 @@ git commit -m "Merge spec deltas from {change-id}
 - Removed: {列出移除的需求}"
 
 # Commit 2: 歸檔
-git add spec/archive/ spec/changes/
+git add openspec/changes/archive/ openspec/changes/
 git commit -m "Archive {change-id} change"
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: leespec-design
-description: "LeeSpec 統一設計指令 — 合併腦力激盪與文件協作，引導用戶從想法到設計。支援 Quick/Full 模式。適用於新功能、架構變更、技術規格、提案等所有需要先設計再動手的工作。觸發詞：leespec design、設計、brainstorm、draft spec。"
+description: "LeeSpec 統一設計指令（OpenSpec 對齊）— 合併腦力激盪與文件協作，引導用戶從想法到設計。支援 Quick/Full 模式。適用於新功能、架構變更、技術規格、提案等所有需要先設計再動手的工作。觸發詞：leespec design、設計、brainstorm、draft spec。"
 ---
 
 # LeeSpec Design — 統一設計流程
@@ -27,7 +27,7 @@ description: "LeeSpec 統一設計指令 — 合併腦力激盪與文件協作�
 
 ### Step 1: 探索脈絡
 - 快速查看相關檔案、最近 commits
-- 若專案有 `spec/specs/`，瀏覽相關 living specs
+- 若專案有 `openspec/specs/`，瀏覽相關 living specs
 
 ### Step 2: 問 2-3 個關鍵問題
 - 一次一題
@@ -51,8 +51,8 @@ description: "LeeSpec 統一設計指令 — 合併腦力激盪與文件協作�
 
 1. **探索專案脈絡**
    - 查看檔案、文件、最近 commits
-   - 若有 `spec/specs/`，瀏覽相關 living specs 和 `spec/changes/` 進行中的提案
-   - 若有 `spec/designs/`，查看是否有相關設計文件
+   - 若有 `openspec/specs/`，瀏覽相關 living specs 和 `openspec/changes/` 進行中的提案
+   - 若有進行中的 changes，查看其 `design.md` 是否有相關設計
 
 2. **判斷輸出類型**
    - Feature spec（程式功能相關設計）
@@ -125,8 +125,10 @@ description: "LeeSpec 統一設計指令 — 合併腦力激盪與文件協作�
    - 若發現問題，回到 Phase 3 修正相關 section
 
 3. **寫入文件**
-   - 將設計文件寫入 `spec/designs/YYYY-MM-DD-<topic>-design.md`
-   - 若專案無 `spec/` 目錄，寫入 `docs/designs/YYYY-MM-DD-<topic>-design.md`
+   - 若已有對應的 change 目錄（`openspec/changes/<change-id>/`），將設計寫入 `openspec/changes/<change-id>/design.md`
+   - 若尚無 change 目錄，建立一個並寫入：`openspec/changes/<change-id>/design.md`
+   - 引用模板 `~/.claude/skills/leespec/templates/design.md`
+   - 若專案尚無 `openspec/` 目錄，寫入 `openspec/explorations/YYYY-MM-DD-<topic>-design.md`（探索性文件）
 
 4. **用戶審閱**
    - 請用戶審閱最終文件
@@ -135,14 +137,14 @@ description: "LeeSpec 統一設計指令 — 合併腦力激盪與文件協作�
 ### Phase 5: Transition
 
 1. **偵測專案結構**
-   - 檢查是否有 `spec/specs/` 目錄
+   - 檢查是否有 `openspec/specs/` 目錄
 
-2. **有 openspec/leespec 結構**
-   - 詢問：「要將設計正式化為 leespec proposal 嗎？（建立 proposal.md + tasks.md + spec-delta.md）」
+2. **有 openspec 結構**
+   - 詢問：「要將設計正式化為 leespec proposal 嗎？（建立 proposal.md + tasks.md + specs/<domain>/spec.md）」
    - Yes → 告知用戶使用 `/leespec-propose`
    - No → 建議使用 planning-with-files 或直接動手
 
-3. **無 spec 結構**
+3. **無 openspec 結構**
    - 建議使用 planning-with-files 建立實作計畫，或直接動手
 
 ---

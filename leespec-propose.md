@@ -1,14 +1,15 @@
 ---
 name: leespec-propose
-description: "LeeSpec 正式化提案 — 建立結構化的 spec proposal，包含 proposal.md、tasks.md、spec-delta.md（EARS 格式）。適用於將設計轉為正式規格提案。觸發詞：leespec propose、建立提案、create proposal、spec proposal。"
+description: "LeeSpec 正式化提案（OpenSpec 對齊）— 建立結構化的 spec proposal，包含 proposal.md、design.md、tasks.md、specs/<domain>/spec.md（EARS 格式）。適用於將設計轉為正式規格提案。觸發詞：leespec propose、建立提案、create proposal、spec proposal。"
 ---
 
 # LeeSpec Propose — 正式化 Spec 提案
 
-將設計轉化為結構化的 spec proposal，產出三份文件：
+將設計轉化為結構化的 spec proposal，產出四份 artifact（對齊 OpenSpec）：
 1. **proposal.md** — Why / What Changes / Impact
-2. **tasks.md** — 可執行的實作任務清單
-3. **spec-delta.md** — EARS 格式的需求變更（ADDED/MODIFIED/REMOVED）
+2. **design.md** — 技術方案（非必要，視複雜度決定）
+3. **tasks.md** — 可執行的實作任務清單
+4. **specs/\<domain\>/spec.md** — EARS 格式的需求變更（ADDED/MODIFIED/REMOVED）
 
 ## Workflow
 
@@ -18,8 +19,9 @@ Proposal Progress:
 - [ ] Step 2: Generate unique change ID
 - [ ] Step 3: Scaffold directory structure
 - [ ] Step 4: Draft proposal.md
+- [ ] Step 4.5: Draft design.md (optional, for complex changes)
 - [ ] Step 5: Create tasks.md
-- [ ] Step 6: Write spec-delta.md (EARS format)
+- [ ] Step 6: Write specs/<domain>/spec.md (EARS format delta)
 - [ ] Step 7: Validate proposal structure
 - [ ] Step 8: Present for user approval
 ```
@@ -30,16 +32,16 @@ Proposal Progress:
 
 ```bash
 # 列出現有 specs
-find spec/specs -name "spec.md" -type f
+find openspec/specs -name "spec.md" -type f
 
 # 列出進行中的 changes
-find spec/changes -maxdepth 1 -type d -not -path "spec/changes"
+find openspec/changes -maxdepth 1 -type d -not -path "openspec/changes" -not -path "openspec/changes/archive"
 
 # 搜尋相關需求
-grep -r "### Requirement:" spec/specs/
+grep -r "### Requirement:" openspec/specs/
 ```
 
-若有 `spec/designs/` 中的設計文件與本次提案相關，一併讀取。
+若有進行中的 changes 含 `design.md`，一併讀取。
 
 ### Step 2: Generate unique change ID
 
@@ -49,13 +51,13 @@ grep -r "### Requirement:" spec/specs/
 
 **驗證**：
 ```bash
-ls spec/changes/ | grep -i "<proposed-id>"
+ls openspec/changes/ | grep -i "<proposed-id>"
 ```
 
 ### Step 3: Scaffold directory structure
 
 ```bash
-mkdir -p spec/changes/{change-id}/specs/{capability-name}
+mkdir -p openspec/changes/{change-id}/specs/{capability-name}
 ```
 
 ### Step 4: Draft proposal.md
@@ -69,6 +71,19 @@ mkdir -p spec/changes/{change-id}/specs/{capability-name}
 
 語氣：清晰、精簡、聚焦決策。
 
+### Step 4.5: Draft design.md（選用）
+
+若變更涉及架構決策、技術方案選擇、或複雜的實作策略，建立 design.md。
+引用模板 `~/.claude/skills/leespec/templates/design.md`。
+
+**必要 section**：
+- **Context** — 背景與限制
+- **Approach** — 選擇的技術方案與替代方案比較
+- **Technical Details** — 架構、資料模型、API 設計
+- **Risks & Mitigations** — 風險與緩解措施
+
+簡單變更（bug fix、config 調整）可跳過此步驟。
+
 ### Step 5: Create tasks.md
 
 引用模板 `~/.claude/skills/leespec/templates/tasks.md`。
@@ -79,9 +94,9 @@ mkdir -p spec/changes/{change-id}/specs/{capability-name}
 - 依相依性排序（database → API → UI）
 - 5-15 個任務為典型數量
 
-### Step 6: Write spec-delta.md (EARS format)
+### Step 6: Write specs/\<domain\>/spec.md (EARS format delta)
 
-這是最關鍵的步驟。引用格式指南 `~/.claude/skills/leespec/EARS_FORMAT.md`，模板 `~/.claude/skills/leespec/templates/spec-delta.md`。
+這是最關鍵的步驟。引用格式指南 `~/.claude/skills/leespec/EARS_FORMAT.md`，模板 `~/.claude/skills/leespec/templates/spec.md`。
 
 **Delta 操作**：
 - `## ADDED Requirements` — 新增功能
@@ -119,19 +134,20 @@ AND 額外結果
 
 ```
 Structure Checklist:
-- [ ] 目錄存在：spec/changes/{change-id}/
+- [ ] 目錄存在：openspec/changes/{change-id}/
 - [ ] proposal.md 有 Why/What/Impact sections
-- [ ] tasks.md 有編號任務清單（5-15 項）
-- [ ] spec-delta 有操作標頭（ADDED/MODIFIED/REMOVED）
+- [ ] design.md 存在（若複雜變更）
+- [ ] tasks.md 有階層式編號任務清單（X.Y 格式，5-15 項）
+- [ ] specs/<domain>/spec.md 有操作標頭（ADDED/MODIFIED/REMOVED）
 - [ ] 需求格式：### Requirement: <name>
 - [ ] Scenario 格式：#### Scenario:（4 個 #）
 ```
 
 **自動檢查**：
 ```bash
-grep -c "## ADDED\|MODIFIED\|REMOVED" spec/changes/{change-id}/specs/**/*.md
-grep -n "#### Scenario:" spec/changes/{change-id}/specs/**/*.md
-grep -n "### Requirement:" spec/changes/{change-id}/specs/**/*.md
+grep -c "## ADDED\|MODIFIED\|REMOVED" openspec/changes/{change-id}/specs/**/*.md
+grep -n "#### Scenario:" openspec/changes/{change-id}/specs/**/*.md
+grep -n "### Requirement:" openspec/changes/{change-id}/specs/**/*.md
 ```
 
 ### Step 8: Present for user approval
@@ -143,9 +159,10 @@ grep -n "### Requirement:" spec/changes/{change-id}/specs/**/*.md
 **Scope**: {簡述}
 
 **Files created**:
-- spec/changes/{change-id}/proposal.md
-- spec/changes/{change-id}/tasks.md
-- spec/changes/{change-id}/specs/{capability}/spec-delta.md
+- openspec/changes/{change-id}/proposal.md
+- openspec/changes/{change-id}/design.md（若適用）
+- openspec/changes/{change-id}/tasks.md
+- openspec/changes/{change-id}/specs/{domain}/spec.md
 
 **Next step**: 審閱提案。批准後，使用 `/leespec-implement` 開始實作。
 ```

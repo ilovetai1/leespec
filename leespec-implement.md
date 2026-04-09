@@ -1,6 +1,6 @@
 ---
 name: leespec-implement
-description: "LeeSpec 實作執行 — 依序執行已批准 proposal 的實作任務，每個任務完成後立即測試驗證。觸發詞：leespec implement、開始實作、apply change、execute spec、work through tasks。"
+description: "LeeSpec 實作執行（OpenSpec 對齊）— 依序執行已批准 proposal 的實作任務，每個任務完成後立即測試驗證。觸發詞：leespec implement、開始實作、apply change、execute spec、work through tasks。"
 ---
 
 # LeeSpec Implement — 實作執行
@@ -26,9 +26,9 @@ Implementation Progress:
 讀取所有相關文件：
 
 ```bash
-cat spec/changes/{change-id}/proposal.md
-cat spec/changes/{change-id}/tasks.md
-find spec/changes/{change-id}/specs -name "*.md" -exec cat {} \;
+cat openspec/changes/{change-id}/proposal.md
+cat openspec/changes/{change-id}/tasks.md
+find openspec/changes/{change-id}/specs -name "*.md" -exec cat {} \;
 ```
 
 **理解**：
@@ -111,7 +111,7 @@ npm run type-check
 所有任務完成後：
 
 ```bash
-echo "Implementation completed: $(date)" > spec/changes/{change-id}/IMPLEMENTED
+echo "Implementation completed: $(date)" > openspec/changes/{change-id}/IMPLEMENTED
 ```
 
 告知用戶：

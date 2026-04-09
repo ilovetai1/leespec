@@ -1,6 +1,6 @@
 ---
 name: leespec-context
-description: "LeeSpec 脈絡查詢 — 探索現有 specs、active changes、archive、designs。觸發詞：leespec context、what specs exist、show changes、list capabilities、project context、find specs。"
+description: "LeeSpec 脈絡查詢（OpenSpec 對齊）— 探索現有 specs、active changes、archive、explorations。觸發詞：leespec context、what specs exist、show changes、list capabilities、project context、find specs。"
 ---
 
 # LeeSpec Context — 脈絡查詢
@@ -15,13 +15,13 @@ description: "LeeSpec 脈絡查詢 — 探索現有 specs、active changes、arc
 
 ```bash
 # 列出所有 spec 檔案
-find spec/specs -name "spec.md" -type f
+find openspec/specs -name "spec.md" -type f
 
 # 列出所有 capability 目錄
-find spec/specs -mindepth 1 -maxdepth 1 -type d
+find openspec/specs -mindepth 1 -maxdepth 1 -type d
 
 # 每個 capability 的需求數
-for cap in spec/specs/*/; do
+for cap in openspec/specs/*/; do
     name=$(basename "$cap")
     count=$(grep -c "### Requirement:" "$cap/spec.md" 2>/dev/null || echo "0")
     echo "$name: $count requirements"
@@ -31,11 +31,12 @@ done
 ### 列出 Active Changes
 
 ```bash
-# 列出進行中的 changes
-find spec/changes -maxdepth 1 -type d -not -path "spec/changes" | sort
+# 列出進行中的 changes（排除 archive）
+find openspec/changes -maxdepth 1 -type d -not -path "openspec/changes" -not -path "openspec/changes/archive" | sort
 
 # 帶 proposal 摘要
-for change in spec/changes/*/; do
+for change in openspec/changes/*/; do
+    [[ "$(basename "$change")" == "archive" ]] && continue
     id=$(basename "$change")
     echo "=== $id ==="
     test -f "$change/IMPLEMENTED" && echo "  Status: Implemented" || echo "  Status: In Progress"
@@ -46,30 +47,33 @@ done
 ### 列出 Archived Changes
 
 ```bash
-ls -1 spec/archive/
+ls -1 openspec/changes/archive/
 
 # 最近歸檔（7 天內）
-find spec/archive/ -maxdepth 1 -type d -mtime -7
+find openspec/changes/archive/ -maxdepth 1 -type d -mtime -7
 ```
 
 ### 列出 Design Documents
 
 ```bash
-# 列出設計文件
-ls -la spec/designs/ 2>/dev/null || echo "No designs directory"
+# 列出各 change 中的 design 文件
+find openspec/changes -name "design.md" -type f
+
+# 列出探索性文件
+ls -la openspec/explorations/ 2>/dev/null || echo "No explorations directory"
 ```
 
 ### 搜尋需求（Keyword）
 
 ```bash
 # 按關鍵字搜尋
-grep -r -i "keyword" spec/specs/
+grep -r -i "keyword" openspec/specs/
 
 # 搜尋特定需求
-grep -r "### Requirement:" spec/specs/ | grep -i "keyword"
+grep -r "### Requirement:" openspec/specs/ | grep -i "keyword"
 
 # 搜尋 scenario
-grep -B 1 -A 10 -i "keyword" spec/specs/**/*.md | grep -A 10 "#### Scenario:"
+grep -B 1 -A 10 -i "keyword" openspec/specs/**/*.md | grep -A 10 "#### Scenario:"
 ```
 
 ## Common Queries
